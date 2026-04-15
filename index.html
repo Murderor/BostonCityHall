@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мэрия Сан-Андреас - Вход</title>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Подключаем Supabase только один раз -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <div id="preloader">
+        <div class="preloader-content">
+            <img src="assets/seal.png" alt="Герб штата" class="state-seal" id="seal-animate" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ccircle cx=%2250%22 cy=%2250%22 r=%2245%22 fill=%22%23d4af37%22/%3E%3Cpolygon points=%2250,20 60,40 85,45 65,65 70,90 50,75 30,90 35,65 15,45 40,40%22 fill=%22%231a1a2e%22/%3E%3C/svg%3E'">
+            <h2>Мэрия Сан-Андреас</h2>
+            <p>Загрузка системы...</p>
+        </div>
+    </div>
+
+    <div class="auth-container" id="auth-container" style="display: none;">
+        <div class="auth-card">
+            <img src="assets/seal.png" alt="Герб" class="auth-seal" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ccircle cx=%2250%22 cy=%2250%22 r=%2245%22 fill=%22%23d4af37%22/%3E%3Cpolygon points=%2250,20 60,40 85,45 65,65 70,90 50,75 30,90 35,65 15,45 40,40%22 fill=%22%231a1a2e%22/%3E%3C/svg%3E'">
+            <h1>Мэрия Сан-Андреас</h1>
+            <p class="auth-subtitle">Официальный портал</p>
+            
+            <div class="auth-tabs">
+                <button class="tab-btn active" data-tab="login">Вход</button>
+                <button class="tab-btn" data-tab="register">Регистрация</button>
+            </div>
+
+            <form id="login-form" class="auth-form active">
+                <div class="form-group">
+                    <label>Имя персонажа</label>
+                    <input type="text" id="login-name" placeholder="John_Smith" required>
+                </div>
+                <div class="form-group">
+                    <label>Пароль</label>
+                    <input type="password" id="login-password" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn-primary">Войти в систему</button>
+                <div class="error-message" id="login-error"></div>
+            </form>
+
+            <form id="register-form" class="auth-form">
+                <div class="form-group">
+                    <label>Имя персонажа</label>
+                    <input type="text" id="reg-name" placeholder="John_Smith" required>
+                </div>
+                <div class="form-group">
+                    <label>Static ID</label>
+                    <input type="text" id="reg-staticid" placeholder="123456" required>
+                </div>
+                <div class="form-group">
+                    <label>Пол</label>
+                    <select id="reg-gender" required>
+                        <option value="Мужской">Мужской</option>
+                        <option value="Женский">Женский</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Пароль</label>
+                    <input type="password" id="reg-password" placeholder="••••••••" required>
+                </div>
+                <div class="form-group">
+                    <label>Подтвердите пароль</label>
+                    <input type="password" id="reg-password-confirm" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn-primary">Зарегистрироваться</button>
+                <div class="error-message" id="register-error"></div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        // Инициализация
+        window.addEventListener('load', async () => {
+            setTimeout(() => {
+                document.getElementById('preloader').style.display = 'none';
+                document.getElementById('auth-container').style.display = 'flex';
+            }, 1500);
+        });
+
+        // Переключение табов
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tab = btn.dataset.tab;
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+                document.getElementById(`${tab}-form`).classList.add('active');
+            });
+        });
+
+        // Логин
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('login-name').value;
+            const password = document.getElementById('login-password').value;
+            const result = await login(name, password);
+            if (result.success) {
+                window.location.href = 'dashboard.html';
+            } else {
+                document.getElementById('login-error').textContent = result.error;
+            }
+        });
+
+        // Регистрация
+        document.getElementById('register-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('reg-name').value;
+            const staticId = document.getElementById('reg-staticid').value;
+            const gender = document.getElementById('reg-gender').value;
+            const password = document.getElementById('reg-password').value;
+            const confirm = document.getElementById('reg-password-confirm').value;
+
+            if (password !== confirm) {
+                document.getElementById('register-error').textContent = 'Пароли не совпадают';
+                return;
+            }
+
+            const result = await register(name, staticId, gender, password);
+            if (result.success) {
+                alert('Регистрация успешна! Теперь войдите.');
+                document.querySelector('.tab-btn[data-tab="login"]').click();
+            } else {
+                document.getElementById('register-error').textContent = result.error;
+            }
+        });
+    </script>
+</body>
+</html>

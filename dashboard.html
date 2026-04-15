@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мэрия Сан-Андреас - Панель управления</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <div id="preloader">
+        <div class="preloader-content">
+            <img src="assets/seal.png" alt="Герб" class="state-seal" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ccircle cx=%2250%22 cy=%2250%22 r=%2245%22 fill=%22%23d4af37%22/%3E%3Cpolygon points=%2250,20 60,40 85,45 65,65 70,90 50,75 30,90 35,65 15,45 40,40%22 fill=%22%231a1a2e%22/%3E%3C/svg%3E'">
+            <h2>Мэрия Сан-Андреас</h2>
+        </div>
+    </div>
+
+    <nav class="navbar">
+        <div class="nav-brand">
+            <img src="assets/seal.png" alt="Герб" class="nav-seal" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ccircle cx=%2250%22 cy=%2250%22 r=%2245%22 fill=%22%23d4af37%22/%3E%3Cpolygon points=%2250,20 60,40 85,45 65,65 70,90 50,75 30,90 35,65 15,45 40,40%22 fill=%22%231a1a2e%22/%3E%3C/svg%3E'">
+            <span>Мэрия Сан-Андреас</span>
+        </div>
+        <div class="nav-links" id="nav-links"></div>
+        <div class="nav-user">
+            <span id="user-name"></span>
+            <button id="logout-btn" class="btn-logout">Выйти</button>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div id="page-content"></div>
+    </main>
+
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/components.js"></script>
+    <script src="js/pages/dashboard.js"></script>
+    <script src="js/pages/profile.js"></script>
+    <script src="js/pages/employees.js"></script>
+    <script src="js/pages/appeals.js"></script>
+    <script src="js/pages/admin.js"></script>
+    <script src="js/router.js"></script>
+    <script>
+        window.addEventListener('load', async () => {
+            await checkAuth();
+            await loadNav();
+            loadPage('dashboard');
+            setTimeout(() => {
+                document.getElementById('preloader').style.display = 'none';
+            }, 1000);
+        });
+    </script>
+
+    <!-- Discord Callback Handler -->
+<script>
+    (async function handleDiscordCallbackDirect() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const discordId = urlParams.get('discord_id');
+        const discordSuccess = urlParams.get('discord_success');
+        
+        if (discordId && discordSuccess) {
+            console.log('Прямая обработка Discord callback...');
+            
+            // Ждем загрузки currentUser из localStorage
+            let user = localStorage.getItem('currentUser');
+            if (user) {
+                user = JSON.parse(user);
+                console.log('Пользователь найден:', user);
+                
+                // Обновляем через Supabase
+                const { data, error } = await supabaseClient
+                    .from('users')
+                    .update({
+                        discord_id: discordId,
+                        discord_username: urlParams.get('discord_username'),
+                        discord_avatar: urlParams.get('discord_avatar')
+                    })
+                    .eq('id', user.id)
+                    .select();
+                
+                if (!error && data) {
+                    // Обновляем localStorage
+                    const updatedUser = { ...user, ...data[0] };
+                    localStorage.setItem('currentUser', JSON.stringify(updatedUser));
+                    console.log('Discord привязан!', updatedUser);
+                    
+                    // Очищаем URL
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                    
+                    // Показываем сообщение
+                    setTimeout(() => {
+                        alert('Discord успешно привязан! Страница будет обновлена.');
+                        location.reload();
+                    }, 1000);
+                }
+            }
+        }
+    })();
+</script>
+</body>
+</html>
