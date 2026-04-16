@@ -311,10 +311,12 @@ async function loadAdminAppeals(page = 1) {
                         </div>
                         <div class="appeal-meta-info">
                             <span>👤 ${escapeHtml(appeal.character_name)}</span>
-                            <span>🎮 Discord: ${appeal.discord_id}</span>
+                            <span>🎮 Discord: ${appeal.discord_id || 'Не указан'}</span>
                             <span>📅 ${formatAppealDate(appeal.created_at)}</span>
                             ${appeal.discord_thread_url ? `
                                 <span>💬 <a href="${appeal.discord_thread_url}" target="_blank" style="color: #5865F2; text-decoration: none;">Тема в Discord</a></span>
+                            ` : appeal.discord_thread_id ? `
+                                <span>💬 ID ветки: ${appeal.discord_thread_id}</span>
                             ` : ''}
                         </div>
                         <div class="appeal-content">
@@ -328,6 +330,9 @@ async function loadAdminAppeals(page = 1) {
                                 <option value="rejected" ${appeal.status === 'rejected' ? 'selected' : ''}>❌ Отклонено</option>
                             </select>
                             <button class="btn-respond" data-id="${appeal.id}">✏️ Ответить</button>
+                            ${!appeal.discord_thread_id ? `
+                                <button class="btn-set-thread" data-id="${appeal.id}">🔗 Указать ID ветки</button>
+                            ` : ''}
                         </div>
                         ${appeal.admin_response ? `
                             <div class="appeal-response">
@@ -366,6 +371,16 @@ async function loadAdminAppeals(page = 1) {
             });
         });
         
+        document.querySelectorAll('.btn-set-thread').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                const appealId = parseInt(btn.dataset.id);
+                const appeal = data.find(a => a.id === appealId);
+                if (appeal) {
+                    showSetThreadIdModal(appeal);
+                }
+            });
+        });
+        
         document.querySelectorAll('.page-btn').forEach(btn => {
             btn.addEventListener('click', async (e) => {
                 const newPage = parseInt(btn.dataset.page);
@@ -385,6 +400,96 @@ async function loadAdminAppeals(page = 1) {
         console.error('Ошибка загрузки обращений для админа:', error);
         container.innerHTML = '<div class="error-message">Ошибка загрузки обращений</div>';
     }
+}
+
+// Модальное окно для указания ID ветки Discord
+function showSetThreadIdModal(appeal) {
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay';
+    modal.innerHTML = `
+        <div class="modal-container" style="max-width: 500px;">
+            <div class="modal-header">
+                <h2>🔗 Указать ID ветки Discord</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="response-info">
+                    <p><strong>Обращение #${appeal.id}</strong></p>
+                    <p><strong>Тема:</strong> ${escapeHtml(appeal.title)}</p>
+                    <p><strong>От:</strong> ${escapeHtml(appeal.character_name)}</p>
+                </div>
+                <div class="form-group">
+                    <label>ID ветки Discord</label>
+                    <input type="text" id="thread-id-input" placeholder="Введите ID ветки (например: 123456789012345678)" value="${appeal.discord_thread_id || ''}">
+                    <small style="display: block; margin-top: 8px; color: var(--text-muted);">
+                        Как получить ID ветки: Включите режим разработчика в Discord → ПКМ по ветке → "Копировать ID"
+                    </small>
+                </div>
+                <div class="form-group">
+                    <label>URL ветки (опционально)</label>
+                    <input type="text" id="thread-url-input" placeholder="https://discord.com/channels/..." value="${appeal.discord_thread_url || ''}">
+                </div>
+                <div class="form-actions">
+                    <button class="btn-cancel">Отмена</button>
+                    <button class="btn-save-thread">Сохранить</button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    document.body.style.overflow = 'hidden';
+    
+    const closeModal = () => {
+        modal.remove();
+        document.body.style.overflow = '';
+    };
+    
+    modal.querySelector('.modal-close').addEventListener('click', closeModal);
+    modal.querySelector('.btn-cancel').addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+    
+    const saveBtn = modal.querySelector('.btn-save-thread');
+    const threadIdInput = modal.querySelector('#thread-id-input');
+    const threadUrlInput = modal.querySelector('#thread-url-input');
+    
+    saveBtn.addEventListener('click', async () => {
+        const threadId = threadIdInput.value.trim();
+        const threadUrl = threadUrlInput.value.trim();
+        
+        if (!threadId) {
+            alert('Введите ID ветки Discord');
+            return;
+        }
+        
+        saveBtn.disabled = true;
+        saveBtn.textContent = 'Сохранение...';
+        
+        try {
+            const { error } = await supabaseClient
+                .from('appeals')
+                .update({
+                    discord_thread_id: threadId,
+                    discord_thread_url: threadUrl || null,
+                    updated_at: new Date()
+                })
+                .eq('id', appeal.id);
+            
+            if (error) throw error;
+            
+            closeModal();
+            showNotification('✅ ID ветки успешно сохранен!', 'success');
+            await loadAdminAppeals(currentAppealsPage);
+            
+        } catch (error) {
+            console.error('Ошибка сохранения:', error);
+            alert('Не удалось сохранить ID ветки');
+            saveBtn.disabled = false;
+            saveBtn.textContent = 'Сохранить';
+        }
+    });
 }
 
 // Фильтрация обращений в админке
@@ -423,8 +528,13 @@ async function filterAdminAppeals() {
                         </div>
                         <div class="appeal-meta-info">
                             <span>👤 ${escapeHtml(appeal.character_name)}</span>
-                            <span>🎮 Discord: ${appeal.discord_id}</span>
+                            <span>🎮 Discord: ${appeal.discord_id || 'Не указан'}</span>
                             <span>📅 ${formatAppealDate(appeal.created_at)}</span>
+                            ${appeal.discord_thread_url ? `
+                                <span>💬 <a href="${appeal.discord_thread_url}" target="_blank" style="color: #5865F2; text-decoration: none;">Тема в Discord</a></span>
+                            ` : appeal.discord_thread_id ? `
+                                <span>💬 ID ветки: ${appeal.discord_thread_id}</span>
+                            ` : ''}
                         </div>
                         <div class="appeal-content">
                             <p>${escapeHtml(appeal.content)}</p>
@@ -437,6 +547,9 @@ async function filterAdminAppeals() {
                                 <option value="rejected" ${appeal.status === 'rejected' ? 'selected' : ''}>❌ Отклонено</option>
                             </select>
                             <button class="btn-respond" data-id="${appeal.id}">✏️ Ответить</button>
+                            ${!appeal.discord_thread_id ? `
+                                <button class="btn-set-thread" data-id="${appeal.id}">🔗 Указать ID ветки</button>
+                            ` : ''}
                         </div>
                         ${appeal.admin_response ? `
                             <div class="appeal-response">
@@ -527,10 +640,34 @@ async function sendDiscordNotification(appealData) {
     }
 }
 
-// Функция для отправки ответа в Discord
-async function sendResponseToDiscord(appealId, responseMessage, responseAuthor) {
+// Функция для отправки ответа в Discord (с поддержкой указания thread_id)
+async function sendResponseToDiscord(appealId, responseMessage, responseAuthor, customThreadId = null) {
     try {
-        console.log('Sending response to Discord for appeal:', appealId);
+        // Если передан customThreadId, используем его, иначе берем из базы
+        let threadId = customThreadId;
+        
+        if (!threadId) {
+            // Получаем обращение чтобы узнать thread_id
+            const { data: appealData, error: fetchError } = await supabaseClient
+                .from('appeals')
+                .select('discord_thread_id, discord_thread_url')
+                .eq('id', appealId)
+                .single();
+            
+            if (fetchError) {
+                console.error('Error fetching appeal for thread_id:', fetchError);
+                return false;
+            }
+            
+            threadId = appealData?.discord_thread_id;
+            
+            if (!threadId) {
+                console.warn('No thread_id found for appeal:', appealId);
+                return false;
+            }
+        }
+        
+        console.log('Sending response to Discord for appeal:', appealId, 'Thread ID:', threadId);
         
         const response = await fetch(`${window.SUPABASE_URL}/functions/v1/discord-forum-notification`, {
             method: 'POST',
@@ -541,6 +678,7 @@ async function sendResponseToDiscord(appealId, responseMessage, responseAuthor) 
             body: JSON.stringify({
                 type: 'send_response',
                 appeal_id: appealId,
+                thread_id: threadId,
                 response_message: responseMessage,
                 response_author: responseAuthor
             })
@@ -730,7 +868,7 @@ function showNotification(message, type = 'info') {
     }, 5000);
 }
 
-// Модальное окно для ответа на обращение
+// Модальное окно для ответа на обращение (обновленная версия с возможностью указать ID ветки)
 function showResponseModal(appeal, isAdmin = false) {
     const modal = document.createElement('div');
     modal.className = 'modal-overlay';
@@ -755,21 +893,25 @@ function showResponseModal(appeal, isAdmin = false) {
                     </div>
                     <div class="form-group">
                         <label>
-                            <input type="checkbox" id="send-to-discord" checked>
-                            Отправить ответ в Discord (в тему обращения)
+                            <input type="checkbox" id="send-to-discord" ${appeal.discord_thread_id ? 'checked' : ''}>
+                            Отправить ответ в Discord
                         </label>
                         ${appeal.discord_thread_url ? `
                             <small style="display: block; margin-top: 5px; color: var(--text-muted);">
-                                💬 Ответ будет отправлен в тему: <a href="${appeal.discord_thread_url}" target="_blank" style="color: #5865F2;">Открыть в Discord</a>
+                                💬 В существующую тему: <a href="${appeal.discord_thread_url}" target="_blank" style="color: #5865F2;">Открыть в Discord</a>
                             </small>
                         ` : appeal.discord_thread_id ? `
-                            <small style="display: block; margin-top: 5px; color: var(--warning);">
-                                ⚠️ Discord тема существует, но URL не сохранен
+                            <small style="display: block; margin-top: 5px; color: var(--text-muted);">
+                                💬 ID ветки: ${appeal.discord_thread_id}
                             </small>
                         ` : `
-                            <small style="display: block; margin-top: 5px; color: var(--warning);">
-                                ⚠️ Discord тема не найдена. Ответ не будет отправлен в Discord.
-                            </small>
+                            <div style="margin-top: 10px;">
+                                <label style="display: block; margin-bottom: 5px;">ID ветки Discord (если известно)</label>
+                                <input type="text" id="custom-thread-id" placeholder="Введите ID ветки вручную" style="width: 100%; padding: 8px; background: rgba(10,14,26,0.8); border: 1px solid rgba(44,95,138,0.3); border-radius: 8px; color: var(--text-primary);">
+                                <small style="display: block; margin-top: 5px; color: var(--warning);">
+                                    ⚠️ Discord тема не найдена. Вы можете указать ID ветки вручную.
+                                </small>
+                            </div>
                         `}
                     </div>
                     <div class="form-actions">
@@ -817,6 +959,7 @@ function showResponseModal(appeal, isAdmin = false) {
         const sendBtn = modal.querySelector('.btn-send-response');
         const responseTextarea = modal.querySelector('#admin-response');
         const sendToDiscordCheckbox = modal.querySelector('#send-to-discord');
+        const customThreadIdInput = modal.querySelector('#custom-thread-id');
         
         sendBtn.addEventListener('click', async () => {
             const response = responseTextarea.value.trim();
@@ -843,14 +986,37 @@ function showResponseModal(appeal, isAdmin = false) {
                 
                 if (error) throw error;
                 
-                // Отправляем в Discord если выбран чекбокс и есть thread_id
+                // Отправляем в Discord если выбран чекбокс
                 let discordSent = false;
-                if (sendToDiscordCheckbox && sendToDiscordCheckbox.checked && appeal.discord_thread_id) {
-                    discordSent = await sendResponseToDiscord(
-                        appeal.id,
-                        response,
-                        `${window.currentUser.character_name} (${window.currentUser.role})`
-                    );
+                if (sendToDiscordCheckbox && sendToDiscordCheckbox.checked) {
+                    let threadIdToUse = null;
+                    
+                    // Если есть customThreadIdInput и он не пустой, используем его
+                    if (customThreadIdInput && customThreadIdInput.value.trim()) {
+                        threadIdToUse = customThreadIdInput.value.trim();
+                        console.log('Using custom thread ID:', threadIdToUse);
+                        
+                        // Сохраняем custom thread_id в базу
+                        await supabaseClient
+                            .from('appeals')
+                            .update({
+                                discord_thread_id: threadIdToUse
+                            })
+                            .eq('id', appeal.id);
+                    } else if (appeal.discord_thread_id) {
+                        threadIdToUse = appeal.discord_thread_id;
+                    }
+                    
+                    if (threadIdToUse) {
+                        discordSent = await sendResponseToDiscord(
+                            appeal.id,
+                            response,
+                            `${window.currentUser.character_name} (${window.currentUser.role})`,
+                            threadIdToUse
+                        );
+                    } else {
+                        console.warn('No thread ID available for Discord response');
+                    }
                 }
                 
                 closeModal();
@@ -859,11 +1025,7 @@ function showResponseModal(appeal, isAdmin = false) {
                 if (discordSent) {
                     showNotification('✅ Ответ отправлен в Discord тему!', 'success');
                 } else if (sendToDiscordCheckbox && sendToDiscordCheckbox.checked) {
-                    if (!appeal.discord_thread_id) {
-                        showNotification('⚠️ Ответ сохранен, но Discord тема не найдена', 'warning');
-                    } else {
-                        showNotification('⚠️ Ответ сохранен, но не отправлен в Discord', 'warning');
-                    }
+                    showNotification('⚠️ Ответ сохранен, но не отправлен в Discord (нет ID ветки)', 'warning');
                 } else {
                     showNotification('✅ Ответ успешно сохранен!', 'success');
                 }

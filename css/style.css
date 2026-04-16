@@ -1922,3 +1922,809 @@ tr:hover {
     background-size: 1000px 100%;
     animation: shimmer 2s infinite;
 }
+
+/* Email column styles */
+.email-link {
+    color: var(--accent-gold);
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: all 0.2s ease;
+    font-family: monospace;
+    letter-spacing: 0.5px;
+}
+
+.email-link:hover {
+    color: var(--accent-gold-light);
+    text-decoration: underline;
+}
+
+.no-email {
+    color: #6c757d;
+    font-size: 0.85rem;
+    opacity: 0.7;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .employees-table th:nth-child(5),
+    .employees-table td:nth-child(5) {
+        display: table-cell;
+    }
+    
+    .email-link {
+        font-size: 0.75rem;
+    }
+}
+/* ========================================
+   ENHANCED PROFILE PAGE STYLES
+   ======================================== */
+
+/* Hero Section */
+.profile-hero {
+    border-radius: 28px;
+    padding: 40px;
+    margin-bottom: 24px;
+    border: 1px solid rgba(44, 95, 138, 0.3);
+    backdrop-filter: blur(10px);
+}
+
+.profile-hero-content {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    flex-wrap: wrap;
+}
+
+.profile-avatar {
+    position: relative;
+}
+
+.avatar-icon {
+    width: 120px;
+    height: 120px;
+    font-size: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(10, 14, 26, 0.6);
+    border-radius: 50%;
+    border: 3px solid var(--accent-gold);
+    transition: all 0.3s ease;
+}
+
+.avatar-icon.mayor-glow {
+    box-shadow: 0 0 30px rgba(196, 167, 71, 0.5);
+    border-color: var(--accent-gold);
+}
+
+.avatar-icon.deputy-glow {
+    box-shadow: 0 0 20px rgba(44, 95, 138, 0.5);
+    border-color: var(--accent-blue);
+}
+
+.avatar-icon.employee-glow {
+    box-shadow: 0 0 15px rgba(74, 85, 104, 0.4);
+}
+
+.discord-badge {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    background: #5865F2;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    border: 2px solid var(--primary-dark);
+}
+
+.profile-hero-info {
+    flex: 1;
+}
+
+.profile-name {
+    font-size: 36px;
+    color: var(--accent-gold);
+    margin-bottom: 12px;
+    letter-spacing: 1px;
+}
+
+.role-badge-large {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 20px;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 40px;
+    font-size: 16px;
+    font-weight: 500;
+    border: 1px solid rgba(196, 167, 71, 0.3);
+}
+
+.profile-stats {
+    display: flex;
+    gap: 32px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.stat-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stat-value {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+/* Profile Cards */
+.profile-card {
+    background: var(--gradient-card);
+    border-radius: 20px;
+    padding: 24px;
+    margin-bottom: 24px;
+    border: 1px solid rgba(44, 95, 138, 0.25);
+    transition: all 0.3s ease;
+}
+
+.profile-card:hover {
+    border-color: var(--accent-blue);
+    transform: translateY(-2px);
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(44, 95, 138, 0.2);
+}
+
+.card-icon {
+    font-size: 24px;
+}
+
+.card-header h3 {
+    color: var(--accent-gold);
+    font-size: 18px;
+    margin: 0;
+    flex: 1;
+}
+
+.card-link {
+    color: var(--accent-blue-light);
+    text-decoration: none;
+    font-size: 13px;
+    transition: color 0.2s;
+}
+
+.card-link:hover {
+    color: var(--accent-gold);
+}
+
+/* Rank Card */
+.rank-info {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.current-rank {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 16px;
+    background: rgba(10, 14, 26, 0.4);
+    border-radius: 16px;
+}
+
+.rank-label {
+    color: var(--text-muted);
+    font-size: 13px;
+}
+
+.rank-value {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.rank-icon {
+    font-size: 24px;
+}
+
+.rank-level {
+    background: rgba(44, 95, 138, 0.2);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    color: var(--accent-blue-light);
+}
+
+.progress-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.progress-bar-container {
+    background: rgba(255, 255, 255, 0.1);
+    height: 12px;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    background: linear-gradient(90deg, var(--accent-blue), var(--accent-gold));
+    height: 100%;
+    border-radius: 10px;
+    transition: width 0.5s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.progress-bar-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+.next-rank, .max-rank-message {
+    margin-top: 12px;
+    padding: 12px;
+    background: rgba(196, 167, 71, 0.1);
+    border-radius: 12px;
+    text-align: center;
+    font-size: 13px;
+}
+
+.next-rank-label {
+    color: var(--text-muted);
+}
+
+.next-rank-value {
+    color: var(--accent-gold);
+    font-weight: 600;
+    margin-left: 8px;
+}
+
+.max-rank-message {
+    background: linear-gradient(135deg, rgba(196, 167, 71, 0.2), transparent);
+    color: var(--accent-gold);
+}
+
+/* Stats Grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.stat-card {
+    text-align: center;
+    padding: 20px;
+    border-radius: 16px;
+    transition: all 0.3s;
+}
+
+.stat-card.total {
+    background: linear-gradient(135deg, rgba(44, 95, 138, 0.2), rgba(30, 61, 90, 0.1));
+}
+
+.stat-card.pending {
+    background: linear-gradient(135deg, rgba(230, 160, 23, 0.2), rgba(184, 128, 18, 0.1));
+}
+
+.stat-card.resolved {
+    background: linear-gradient(135deg, rgba(45, 106, 79, 0.2), rgba(36, 85, 63, 0.1));
+}
+
+.stat-number {
+    font-size: 32px;
+    font-weight: bold;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+}
+
+.stat-name {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+/* Discord Card */
+.discord-connected, .discord-not-connected {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.discord-status-icon {
+    font-size: 48px;
+}
+
+.discord-info {
+    flex: 1;
+}
+
+.discord-label {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+}
+
+.discord-username {
+    font-size: 18px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #5865F2;
+}
+
+.discord-id {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-family: monospace;
+}
+
+.discord-warning {
+    color: var(--warning);
+    font-size: 13px;
+}
+
+.discord-perks {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.perk-badge {
+    background: rgba(88, 101, 242, 0.15);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    color: #5865F2;
+}
+
+.btn-discord-connect-profile {
+    background: #5865F2;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 40px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-discord-connect-profile:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(88, 101, 242, 0.4);
+}
+
+/* Info Grid */
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    background: rgba(10, 14, 26, 0.3);
+    border-radius: 12px;
+}
+
+.info-label {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.info-value {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--accent-blue-light);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .profile-hero {
+        padding: 24px;
+    }
+    
+    .profile-hero-content {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .profile-name {
+        font-size: 28px;
+    }
+    
+    .profile-stats {
+        justify-content: center;
+    }
+    
+    .stats-grid {
+        gap: 12px;
+    }
+    
+    .stat-card {
+        padding: 12px;
+    }
+    
+    .stat-number {
+        font-size: 24px;
+    }
+    
+    .discord-connected, .discord-not-connected {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .discord-perks {
+        justify-content: center;
+    }
+    
+    .info-item {
+        flex-direction: column;
+        gap: 8px;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+    
+    .current-rank {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .rank-value {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}
+
+/* ========================================
+   BUTTON STYLES - Set Thread ID
+   ======================================== */
+
+/* Кнопка "Указать ID ветки" */
+.btn-set-thread {
+    background: rgba(88, 101, 242, 0.15);
+    border: 1px solid #5865F2;
+    padding: 8px 16px;
+    border-radius: 10px;
+    color: #5865F2;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 13px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-set-thread:hover {
+    background: #5865F2;
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(88, 101, 242, 0.3);
+}
+
+.btn-set-thread:active {
+    transform: translateY(0);
+}
+
+/* Стили для поля ввода ID ветки в модальном окне */
+#thread-id-input,
+#custom-thread-id {
+    width: 100%;
+    padding: 12px 16px;
+    background: rgba(10, 14, 26, 0.8);
+    border: 1px solid rgba(44, 95, 138, 0.3);
+    border-radius: 12px;
+    color: var(--text-primary);
+    font-size: 14px;
+    font-family: monospace;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+}
+
+#thread-id-input:focus,
+#custom-thread-id:focus {
+    outline: none;
+    border-color: #5865F2;
+    box-shadow: 0 0 0 3px rgba(88, 101, 242, 0.2);
+}
+
+#thread-id-input:hover,
+#custom-thread-id:hover {
+    border-color: rgba(88, 101, 242, 0.5);
+}
+
+/* Стили для отображения ID ветки в мета-информации */
+.appeal-meta-info span:has(> .thread-id-badge) {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.thread-id-badge {
+    background: rgba(88, 101, 242, 0.15);
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-family: monospace;
+    color: #5865F2;
+    border: 1px solid rgba(88, 101, 242, 0.3);
+}
+
+/* Ссылка на Discord тему */
+.discord-thread-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(88, 101, 242, 0.1);
+    padding: 4px 12px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-size: 12px;
+    color: #5865F2;
+    transition: all 0.2s ease;
+}
+
+.discord-thread-link:hover {
+    background: #5865F2;
+    color: white;
+    transform: translateY(-1px);
+}
+
+/* Индикатор отсутствия Discord темы */
+.no-thread-warning {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(230, 160, 23, 0.15);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    color: var(--warning);
+    border: 1px solid rgba(230, 160, 23, 0.3);
+}
+
+/* Кнопка сохранения в модальном окне */
+.btn-save-thread {
+    background: var(--gradient-accent);
+    border: none;
+    padding: 10px 28px;
+    border-radius: 12px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-save-thread:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-glow);
+    filter: brightness(1.05);
+}
+
+.btn-save-thread:active {
+    transform: translateY(0);
+}
+
+.btn-save-thread:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Группа кнопок в админ-панели */
+.appeal-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+/* Для мобильных устройств */
+@media (max-width: 768px) {
+    .btn-set-thread {
+        padding: 6px 12px;
+        font-size: 11px;
+    }
+    
+    .btn-set-thread::before {
+        content: "🔗";
+        font-size: 12px;
+    }
+    
+    .thread-id-badge {
+        font-size: 10px;
+        padding: 2px 6px;
+    }
+    
+    .appeal-actions {
+        gap: 8px;
+    }
+    
+    .btn-save-thread {
+        padding: 8px 20px;
+        font-size: 13px;
+    }
+}
+
+/* Анимация для кнопки при нажатии */
+@keyframes btnPulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(0.98);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.btn-set-thread:active {
+    animation: btnPulse 0.2s ease;
+}
+
+/* Стили для успешного сохранения */
+.thread-saved-success {
+    animation: successFlash 0.5s ease;
+}
+
+@keyframes successFlash {
+    0% {
+        background: rgba(45, 106, 79, 0.3);
+        border-color: var(--success);
+    }
+    100% {
+        background: transparent;
+        border-color: #5865F2;
+    }
+}
+
+/* Туториал-подсказка для получения ID ветки */
+.thread-id-tutorial {
+    background: rgba(10, 14, 26, 0.6);
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-top: 12px;
+    font-size: 12px;
+    border-left: 3px solid #5865F2;
+}
+
+.thread-id-tutorial strong {
+    color: #5865F2;
+    display: block;
+    margin-bottom: 6px;
+}
+
+.thread-id-tutorial ol {
+    margin: 8px 0 0 20px;
+    color: var(--text-secondary);
+}
+
+.thread-id-tutorial li {
+    margin: 4px 0;
+}
+
+/* Иконка Discord в кнопках */
+.btn-set-thread::before {
+    content: "🔗";
+    font-size: 14px;
+}
+
+.btn-save-thread::before {
+    content: "💾";
+    font-size: 14px;
+}
+
+/* Стили для поля ввода с моноширинным шрифтом */
+input[type="text"][id*="thread"] {
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    letter-spacing: 0.5px;
+}
+
+/* Placeholder стили */
+#thread-id-input::placeholder,
+#custom-thread-id::placeholder {
+    color: var(--text-muted);
+    font-family: inherit;
+    font-size: 12px;
+}
+
+/* Инструменты для копирования ID */
+.copy-thread-id {
+    background: rgba(107, 122, 138, 0.2);
+    border: none;
+    padding: 4px 8px;
+    border-radius: 6px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 11px;
+    transition: all 0.2s;
+    margin-left: 8px;
+}
+
+.copy-thread-id:hover {
+    background: #5865F2;
+    color: white;
+}
+
+/* Индикатор загрузки при сохранении */
+.btn-save-thread.loading {
+    position: relative;
+    color: transparent;
+}
+
+.btn-save-thread.loading::after {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 50%;
+    left: 50%;
+    margin-left: -8px;
+    margin-top: -8px;
+    border: 2px solid white;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}

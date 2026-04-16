@@ -55,6 +55,7 @@ async function renderEmployees() {
                                         <th>Имя персонажа</th>
                                         <th>Static ID</th>
                                         <th>Пол</th>
+                                        <th>Почта</th>
                                         <th>Дата назначения</th>
                                     </tr>
                                 </thead>
@@ -70,6 +71,12 @@ async function renderEmployees() {
                                             <td><strong>${emp.character_name}</strong></td>
                                             <td>${emp.static_id}</td>
                                             <td>${emp.gender}</td>
+                                            <td>
+                                                ${emp.discord_username ? 
+                                                    `<a href="mailto:${emp.discord_username}@SA.com" class="email-link">${emp.discord_username}@SA.com</a>` : 
+                                                    '<span class="no-email">—</span>'
+                                                }
+                                            </td>
                                             <td>${new Date(emp.created_at).toLocaleDateString('ru-RU')}</td>
                                         </tr>
                                     `).join('')}
@@ -104,6 +111,7 @@ async function renderEmployees() {
                                         <th>Имя персонажа</th>
                                         <th>Static ID</th>
                                         <th>Пол</th>
+                                        <th>Почта</th>
                                         <th>Дата назначения</th>
                                     </tr>
                                 </thead>
@@ -119,6 +127,12 @@ async function renderEmployees() {
                                             <td><strong>${emp.character_name}</strong></td>
                                             <td>${emp.static_id}</td>
                                             <td>${emp.gender}</td>
+                                            <td>
+                                                ${emp.discord_username ? 
+                                                    `<a href="mailto:${emp.discord_username}@SA.com" class="email-link">${emp.discord_username}@SA.com</a>` : 
+                                                    '<span class="no-email">—</span>'
+                                                }
+                                            </td>
                                             <td>${new Date(emp.created_at).toLocaleDateString('ru-RU')}</td>
                                         </tr>
                                     `).join('')}
